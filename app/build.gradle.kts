@@ -46,6 +46,7 @@ dependencies {
     implementation(libs.androidx.compose.ui.graphics)
     implementation(libs.androidx.compose.ui.tooling.preview)
     implementation(libs.androidx.compose.material3)
+    implementation(libs.books)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -58,7 +59,7 @@ dependencies {
     implementation("com.squareup.retrofit2:converter-gson:2.9.0")
     implementation("com.squareup.okhttp3:okhttp:4.11.0")
     implementation("com.squareup.okhttp3:logging-interceptor:4.11.0")
-// Coroutines (Để chạy tác vụ nền)
+    // Coroutines (Để chạy tác vụ nền)
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.2")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.2")
@@ -66,4 +67,6 @@ dependencies {
     implementation("androidx.navigation:navigation-compose:2.7.7")
     // ViewModel cho Compose
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.7.0")
+    // Thêm dòng này để dùng được tất cả các Icon (Gavel, People, MenuBook...)
+    implementation("androidx.compose.material:material-icons-extended:1.6.0")
 }

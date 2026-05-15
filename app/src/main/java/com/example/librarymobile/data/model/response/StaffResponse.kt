@@ -6,15 +6,10 @@ import com.google.gson.annotations.SerializedName
  * Ánh xạ từ bảng 'User' và 'Staff' trong Database
  */
 data class StaffResponse(
-    @SerializedName("user_id") val userId: Int,
-    @SerializedName("username") val username: String,
-    @SerializedName("full_name") val fullName: String,
-    @SerializedName("email") val email: String,
-    @SerializedName("phone_number") val phone: String?,
-    @SerializedName("address") val address: String?,
-    @SerializedName("date_of_birth") val dob: String?,
-    @SerializedName("status") val status: String, // ACTIVE, INACTIVE, LOCKED
-    @SerializedName("role") val role: RoleResponse?,
-    @SerializedName("created_at") val createdAt: String,
-    @SerializedName("updated_at") val updatedAt: String?
+    @SerializedName("staffId") val staffId: Long?,
+    @SerializedName("fullName") val fullName: String?,
+    @SerializedName("userName") val userName: String?,
+    @SerializedName("email") val email: String?,
+    @SerializedName("phoneNumber") val phoneNumber: String?,
+    @SerializedName("positionName") val positionName: String?
 )

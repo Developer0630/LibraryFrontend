@@ -1,110 +1,134 @@
 package com.example.librarymobile.ui.admin.dashboard
 
+import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 
-// Định nghĩa các chức năng trên Dashboard
-data class DashboardItem(
-    val title: String,
-    val icon: ImageVector,
-    val route: String,
-    val color: androidx.compose.ui.graphics.Color
-)
-
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun DashboardScreen() {
-    val menuItems = listOf(
-        DashboardItem("Nhân sự", Icons.Default.Person, "staff_manage", MaterialTheme.colorScheme.primary),
-        DashboardItem("Quy tắc", Icons.Default.Settings, "rules_manage", MaterialTheme.colorScheme.secondary),
-//        DashboardItem("Sách", Icons.Default.MenuBook, "books_manage", androidx.compose.ui.graphics.Color(0xFF4CAF50)),
-//        DashboardItem("Thống kê", Icons.Default.BarChart, "stats", androidx.compose.ui.graphics.Color(0xFFFF9800))
-    )
+fun DashboardScreen(navController: NavController) {
+    val scrollState = rememberScrollState()
 
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = { Text("HUST ADMIN", fontWeight = FontWeight.Bold) },
-                actions = {
-                    IconButton(onClick = { /* Logout logic */ }) {
-                        Icon(Icons.Default.ExitToApp, contentDescription = "Logout")
-                    }
-                }
-            )
-        }
-    ) { paddingValues ->
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(paddingValues)
-                .padding(16.dp)
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Brush.verticalGradient(listOf(Color(0xFF1A237E), Color(0xFFF0F2F5))))
+            .verticalScroll(scrollState)
+    ) {
+        // --- PHẦN 1: HEADER & PROFILE ---
+        Row(
+            modifier = Modifier.fillMaxWidth().padding(24.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            Text(
-                text = "Chào mừng quay trở lại,",
-                fontSize = 16.sp,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
-            )
-            Text(
-                text = "Quản trị viên",
-                fontSize = 24.sp,
-                fontWeight = FontWeight.Bold,
-                modifier = Modifier.padding(bottom = 24.dp)
-            )
+            Column {
+                Text("Bảng điều khiển", color = Color.White.copy(alpha = 0.7f), fontSize = 14.sp)
+                Text("Chào Admin Luong!", color = Color.White, fontWeight = FontWeight.Bold, fontSize = 24.sp)
+            }
+            Box(modifier = Modifier.size(50.dp).background(Color.White.copy(alpha = 0.2f), CircleShape), contentAlignment = Alignment.Center) {
+                Icon(Icons.Default.Notifications, contentDescription = null, tint = Color.White)
+            }
+        }
 
-            // Lưới các chức năng (Grid)
-            LazyVerticalGrid(
-                columns = GridCells.Fixed(2),
-                horizontalArrangement = Arrangement.spacedBy(16.dp),
-                verticalArrangement = Arrangement.spacedBy(16.dp)
-            ) {
-                items(menuItems) { item ->
-                    AdminMenuItem(item)
+        // --- PHẦN 2: GLASS CARD TỔNG QUAN (SÁNG TẠO) ---
+        Card(
+            modifier = Modifier.fillMaxWidth().padding(horizontal = 24.dp).height(180.dp),
+            shape = RoundedCornerShape(32.dp),
+            colors = CardDefaults.cardColors(containerColor = Color.White.copy(alpha = 0.9f)),
+            elevation = CardDefaults.cardElevation(0.dp)
+        ) {
+            Box(modifier = Modifier.fillMaxSize()) {
+                // Trang trí một chút hình khối mờ phía sau
+                Canvas(modifier = Modifier.matchParentSize()) {
+                    drawCircle(color = Color(0xFFD32F2F).copy(alpha = 0.1f), radius = 200f, center = center)
                 }
+                Column(modifier = Modifier.padding(24.dp)) {
+                    Text("Hiệu suất thư viện", fontWeight = FontWeight.Bold, color = Color.Black)
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Row(verticalAlignment = Alignment.Bottom) {
+                        Text("85%", fontSize = 48.sp, fontWeight = FontWeight.Black, color = Color(0xFF1A237E))
+                        Text(" mục tiêu tháng", modifier = Modifier.padding(bottom = 12.dp, start = 8.dp), color = Color.Gray)
+                    }
+                    LinearProgressIndicator(
+                        progress = 0.85f,
+                        modifier = Modifier.fillMaxWidth().height(8.dp).clip(CircleShape),
+                        color = Color(0xFFD32F2F),
+                        trackColor = Color.LightGray.copy(alpha = 0.3f)
+                    )
+                }
+            }
+        }
+
+        Spacer(modifier = Modifier.height(32.dp))
+
+        // --- PHẦN 3: QUICK ACTIONS (DẠNG TRƯỢT NGANG) ---
+        Text("Thao tác nhanh", modifier = Modifier.padding(horizontal = 24.dp), fontWeight = FontWeight.Bold)
+        LazyRow(
+            contentPadding = PaddingValues(horizontal = 24.dp, vertical = 16.dp),
+            horizontalArrangement = Arrangement.spacedBy(16.dp)
+        ) {
+            item { QuickActionItem("Nhân viên", Icons.Default.PersonAdd, Color(0xFF4285F4)) { navController.navigate("staff_manage") } }
+            item { QuickActionItem("Thêm sách", Icons.Default.AddBusiness, Color(0xFF34A853)) { navController.navigate("book_manage") } }
+            item { QuickActionItem("Báo cáo", Icons.Default.PieChart, Color(0xFFFBBC05)) { /* Action */ } }
+            item { QuickActionItem("Cài đặt", Icons.Default.Settings, Color(0xFF7B1FA2)) { /* Action */ } }
+        }
+
+        // --- PHẦN 4: RECENT ACTIVITY (DANH SÁCH HOẠT ĐỘNG) ---
+        Surface(
+            modifier = Modifier.fillMaxWidth().weight(1f, fill = false),
+            color = Color.White,
+            shape = RoundedCornerShape(topStart = 40.dp, topEnd = 40.dp)
+        ) {
+            Column(modifier = Modifier.padding(24.dp)) {
+                Text("Hoạt động gần đây", fontWeight = FontWeight.Bold, style = MaterialTheme.typography.titleMedium)
+                Spacer(modifier = Modifier.height(16.dp))
+                // Giả lập danh sách hoạt động
+                ActivityItem("SV001 vừa mượn 'Lập trình Kotlin'", "10 phút trước")
+                ActivityItem("Nhân viên A cập nhật hệ thống", "1 giờ trước")
+                ActivityItem("Sách 'AI' được trả bởi SV005", "3 giờ trước")
             }
         }
     }
 }
 
 @Composable
-fun AdminMenuItem(item: DashboardItem) {
-    Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(140.dp)
-            .clickable { /* Điều hướng đến route của item */ },
-        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
-    ) {
-        Column(
-            modifier = Modifier.fillMaxSize(),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
-        ) {
-            Icon(
-                imageVector = item.icon,
-                contentDescription = null,
-                modifier = Modifier.size(40.dp),
-                tint = item.color
-            )
-            Spacer(modifier = Modifier.height(12.dp))
-            Text(
-                text = item.title,
-                fontWeight = FontWeight.Bold,
-                fontSize = 16.sp
-            )
+fun QuickActionItem(title: String, icon: ImageVector, color: Color, onClick: () -> Unit) {
+    Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.clickable { onClick() }) {
+        Surface(modifier = Modifier.size(70.dp), shape = RoundedCornerShape(20.dp), color = color.copy(alpha = 0.1f)) {
+            Icon(icon, null, tint = color, modifier = Modifier.padding(20.dp))
+        }
+        Spacer(modifier = Modifier.height(8.dp))
+        Text(title, fontSize = 12.sp, fontWeight = FontWeight.Medium)
+    }
+}
+
+@Composable
+fun ActivityItem(text: String, time: String) {
+    Row(modifier = Modifier.fillMaxWidth().padding(vertical = 12.dp), verticalAlignment = Alignment.CenterVertically) {
+        Box(modifier = Modifier.size(10.dp).background(Color(0xFFD32F2F), CircleShape))
+        Spacer(modifier = Modifier.width(16.dp))
+        Column {
+            Text(text, fontSize = 14.sp)
+            Text(time, fontSize = 12.sp, color = Color.Gray)
         }
     }
 }

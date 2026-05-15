@@ -1,18 +1,23 @@
 package com.example.librarymobile.data.api
 
-import com.example.librarymobile.data.model.request.CreateStaffRequest
+import com.example.librarymobile.data.model.request.BookRequest
+import com.example.librarymobile.data.model.request.StaffRequest
 import com.example.librarymobile.data.model.request.LoginRequest
-import com.example.librarymobile.data.model.request.UpdateStaffRequest
 import com.example.librarymobile.data.model.response.BaseResponse
+import com.example.librarymobile.data.model.response.BookCopyResponse
+import com.example.librarymobile.data.model.response.BookResponse
 import com.example.librarymobile.data.model.response.RoleResponse
 import com.example.librarymobile.data.model.response.StaffResponse
 import com.example.librarymobile.data.model.response.SystemRuleResponse
+import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET
+import retrofit2.http.PATCH
 import retrofit2.http.POST
 import retrofit2.http.PUT
 import retrofit2.http.Path
+import retrofit2.http.Query
 
 /**
  * Danh sách các Endpoints kết nối với Backend Spring Boot
@@ -27,7 +32,7 @@ interface ApiService {
     suspend fun login(@Body request: LoginRequest): BaseResponse<Map<String,Any>>
 
     @POST("api/auth/register")
-    suspend fun register(@Body staffData: CreateStaffRequest): BaseResponse<StaffResponse>
+    suspend fun register(@Body staffData: StaffRequest): BaseResponse<StaffResponse>
     /**
      * Lấy danh sách toàn bộ vai trò (Admin, Librarian, Member...)
      */
@@ -47,7 +52,7 @@ interface ApiService {
      * Lấy danh sách toàn bộ nhân viên/thủ thư trong hệ thống
      */
     @GET("api/staff")
-    suspend fun getStaffs(): BaseResponse<List<StaffResponse>>
+    suspend fun getAllStaffs(): Response<List<StaffResponse>>
 
     /**
      * Tạo mới một nhân viên/thủ thư
@@ -55,8 +60,8 @@ interface ApiService {
      */
     @POST("api/staff")
     suspend fun createStaff(
-        @Body staffRequest: CreateStaffRequest
-    ): BaseResponse<StaffResponse>
+        @Body staffRequest: StaffRequest
+    ): Response<StaffResponse>
 
     /**
      * Cập nhật thông tin nhân viên theo ID
@@ -65,9 +70,9 @@ interface ApiService {
      */
     @PUT("api/staff/{id}")
     suspend fun updateStaff(
-        @Path("id") id: Int,
-        @Body request: UpdateStaffRequest
-    ): BaseResponse<StaffResponse>
+        @Path("id") id: Long,
+        @Body request: StaffRequest
+    ): Response<StaffResponse>
 
     /**
      * Xóa nhân viên khỏi hệ thống
@@ -76,8 +81,8 @@ interface ApiService {
      */
     @DELETE("api/staff/{id}")
     suspend fun deleteStaff(
-        @Path("id") id: Int
-    ): BaseResponse<Unit> // Unit tương đương với 'void' trong Java vì xóa thường không trả về data
+        @Path("id") id: Long
+    ): Response<Unit> // Unit tương đương với 'void' trong Java vì xóa thường không trả về data
 
     /**
      * Lấy danh sách tất cả quy tắc hệ thống (Hạn mượn, phí phạt, phí hư hỏng...)
@@ -95,4 +100,6 @@ interface ApiService {
         @Path("key") key: String,
         @Body body: Map<String, String>
     ): BaseResponse<SystemRuleResponse>
+
+
 }

@@ -67,7 +67,6 @@ fun LoginScreen(
 
         Button(
             onClick = {
-                // GỌI LOGIC THỰC TẾ: Không gọi callback ngay mà gọi qua ViewModel
                 viewModel.login(username, password)
             },
             modifier = Modifier.fillMaxWidth().height(56.dp),

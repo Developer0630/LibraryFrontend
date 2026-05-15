@@ -97,7 +97,7 @@ fun RegisterScreen(
             Button(
                 onClick = {
                     // Gọi hàm register trong ViewModel
-                    authViewModel.register(username, password, fullName, email)
+//                    authViewModel.register(username, password, fullName, email)
                     onBackToLogin()
                 },
                 modifier = Modifier
