@@ -7,10 +7,11 @@ data class BookResponse(
     @SerializedName("title") val title: String?,
     @SerializedName("author") val author: String?,
     @SerializedName("isbn") val isbn: String?,
-    @SerializedName("category") val category: String?,
+    @SerializedName("genre") val category: String?,
     @SerializedName("description") val description: String?,
     @SerializedName("totalStock") val totalStock: Int?,
-    @SerializedName("shelfLocation") val shelfLocation: String?
+    @SerializedName("shelfLocation") val shelfLocation: String?,
+    @SerializedName("price") val price: Double?
 )
 
 data class BookCopyResponse(

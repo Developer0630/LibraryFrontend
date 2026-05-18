@@ -4,6 +4,7 @@ import androidx.compose.runtime.*
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.librarymobile.data.api.NetworkModule
+import com.example.librarymobile.data.model.request.BookRequest
 
 import com.example.librarymobile.data.model.response.BookResponse
 import kotlinx.coroutines.launch
@@ -41,10 +42,50 @@ class BookViewModel : ViewModel() {
         }
     }
 
+    fun createBook(request: BookRequest) {
+        viewModelScope.launch {
+            try {
+                val response = NetworkModule.bookApiService.createBook(request)
+                // SỬA Ở ĐÂY: response.body() để lấy BaseResponse, rồi mới .data
+                if (response.isSuccessful && response.body()?.data != null) {
+                    fetchBooks()
+                } else {
+                    errorMessage = "Không thể thêm sách"
+                }
+            } catch (e: Exception) {
+                errorMessage = "Lỗi kết nối: ${e.message}"
+            }
+        }
+    }
+
+    fun updateBook(id: Long, request: BookRequest) {
+        viewModelScope.launch {
+            try {
+                val response = NetworkModule.bookApiService.updateBook(id, request)
+                // SỬA Ở ĐÂY: response.body() để lấy BaseResponse, rồi mới .data
+                if (response.isSuccessful && response.body()?.data != null) {
+                    fetchBooks()
+                } else {
+                    errorMessage = "Không thể cập nhật sách"
+                }
+            } catch (e: Exception) {
+                errorMessage = "Lỗi kết nối: ${e.message}"
+            }
+        }
+    }
+
     fun deleteBook(id: Long) {
         viewModelScope.launch {
-            val response = NetworkModule.bookApiService.deleteBook(id)
-            if (response.isSuccessful) fetchBooks()
+            try {
+                val response = NetworkModule.bookApiService.deleteBook(id)
+                if (response.isSuccessful) {
+                    fetchBooks() // Xóa xong reload danh sách
+                } else {
+                    errorMessage = "Không thể xóa sách"
+                }
+            } catch (e: Exception) {
+                errorMessage = "Lỗi kết nối: ${e.message}"
+            }
         }
     }
 }

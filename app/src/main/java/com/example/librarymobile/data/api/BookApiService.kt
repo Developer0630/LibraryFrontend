@@ -12,16 +12,20 @@ interface BookApiService {
     ): Response<BaseResponse<List<BookResponse>>>
 
     @POST("api/books")
-    suspend fun createBook(@Body request: BookRequest): Response<BookResponse>
-
-    @GET("api/books/{id}")
-    suspend fun getBookById(@Path("id") id: Long): Response<BookResponse>
+    suspend fun createBook(
+        @Body request: BookRequest
+    ): Response<BaseResponse<BookResponse>>
 
     @PUT("api/books/{id}")
-    suspend fun updateBook(@Path("id") id: Long, @Body request: BookRequest): Response<BookResponse>
+    suspend fun updateBook(
+        @Path("id") id: Long,
+        @Body request: BookRequest
+    ): Response<BaseResponse<BookResponse>>
 
     @DELETE("api/books/{id}")
-    suspend fun deleteBook(@Path("id") id: Long): Response<Unit>
+    suspend fun deleteBook(
+        @Path("id") id: Long
+    ): Response<BaseResponse<Unit>>
 
     // Quản lý bản in (Book Copies)
     @GET("api/book-copies")
