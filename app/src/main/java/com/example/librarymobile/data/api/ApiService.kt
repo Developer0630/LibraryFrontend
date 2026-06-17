@@ -1,11 +1,10 @@
 package com.example.librarymobile.data.api
 
-import com.example.librarymobile.data.model.request.BookRequest
 import com.example.librarymobile.data.model.request.StaffRequest
 import com.example.librarymobile.data.model.request.LoginRequest
+import com.example.librarymobile.data.model.request.RegisterRequest
 import com.example.librarymobile.data.model.response.BaseResponse
-import com.example.librarymobile.data.model.response.BookCopyResponse
-import com.example.librarymobile.data.model.response.BookResponse
+import com.example.librarymobile.data.model.response.LoginResponse
 import com.example.librarymobile.data.model.response.RoleResponse
 import com.example.librarymobile.data.model.response.StaffResponse
 import com.example.librarymobile.data.model.response.SystemRuleResponse
@@ -13,11 +12,9 @@ import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET
-import retrofit2.http.PATCH
 import retrofit2.http.POST
 import retrofit2.http.PUT
 import retrofit2.http.Path
-import retrofit2.http.Query
 
 /**
  * Danh sách các Endpoints kết nối với Backend Spring Boot
@@ -29,10 +26,10 @@ interface ApiService {
      * @return Thông tin User và Token nếu thành công
      */
     @POST("api/auth/login")
-    suspend fun login(@Body request: LoginRequest): BaseResponse<Map<String,Any>>
+    suspend fun login(@Body request: LoginRequest): BaseResponse<LoginResponse>
 
     @POST("api/auth/register")
-    suspend fun register(@Body staffData: StaffRequest): BaseResponse<StaffResponse>
+    suspend fun register(@Body staffData: RegisterRequest): BaseResponse<StaffResponse>
     /**
      * Lấy danh sách toàn bộ vai trò (Admin, Librarian, Member...)
      */

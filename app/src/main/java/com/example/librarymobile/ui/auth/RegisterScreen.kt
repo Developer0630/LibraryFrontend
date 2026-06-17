@@ -6,11 +6,12 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel // Nhớ import cái này
+import androidx.lifecycle.viewmodel.compose.viewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -18,11 +19,21 @@ fun RegisterScreen(
     onBackToLogin: () -> Unit,
     authViewModel: AuthViewModel = viewModel() // Khởi tạo ViewModel ở đây
 ) {
-    // 1. Khai báo đầy đủ các State để hứng dữ liệu từ TextField
+    // Khai báo đầy đủ các State để hứng dữ liệu từ TextField
     var fullName by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
     var username by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
+
+    // Lắng nghe trạng thái đăng ký thành công từ ViewModel
+    LaunchedEffect(authViewModel.registerSuccess) {
+        if (authViewModel.registerSuccess) {
+            // Đăng ký xong tự động quay lại trang đăng nhập
+            onBackToLogin()
+            // Reset lại trạng thái để lần sau vào không bị dính flag cũ
+            authViewModel.registerSuccess = false
+        }
+    }
 
     Scaffold(
         topBar = {
@@ -36,7 +47,7 @@ fun RegisterScreen(
                 .fillMaxSize()
                 .padding(paddingValues)
                 .padding(24.dp)
-                .verticalScroll(rememberScrollState()) // Cho phép cuộn khi hiện bàn phím
+                .verticalScroll(rememberScrollState())
         ) {
             Text(
                 text = "TẠO TÀI KHOẢN NHÂN VIÊN",
@@ -51,13 +62,14 @@ fun RegisterScreen(
                 modifier = Modifier.padding(bottom = 24.dp)
             )
 
-            // 2. Các ô nhập liệu
+            // Các ô nhập liệu (Giữ nguyên của bro)
             OutlinedTextField(
                 value = fullName,
                 onValueChange = { fullName = it },
                 label = { Text("Họ và tên") },
                 modifier = Modifier.fillMaxWidth(),
-                singleLine = true
+                singleLine = true,
+                enabled = !authViewModel.isLoading
             )
 
             Spacer(modifier = Modifier.height(12.dp))
@@ -67,7 +79,8 @@ fun RegisterScreen(
                 onValueChange = { email = it },
                 label = { Text("Email") },
                 modifier = Modifier.fillMaxWidth(),
-                singleLine = true
+                singleLine = true,
+                enabled = !authViewModel.isLoading
             )
 
             Spacer(modifier = Modifier.height(12.dp))
@@ -77,7 +90,8 @@ fun RegisterScreen(
                 onValueChange = { username = it },
                 label = { Text("Tên đăng nhập") },
                 modifier = Modifier.fillMaxWidth(),
-                singleLine = true
+                singleLine = true,
+                enabled = !authViewModel.isLoading
             )
 
             Spacer(modifier = Modifier.height(12.dp))
@@ -88,25 +102,31 @@ fun RegisterScreen(
                 label = { Text("Mật khẩu") },
                 modifier = Modifier.fillMaxWidth(),
                 visualTransformation = PasswordVisualTransformation(),
-                singleLine = true
+                singleLine = true,
+                enabled = !authViewModel.isLoading
             )
+
+            // Hiển thị thông báo lỗi đăng ký nếu Backend trả về lỗi
+            authViewModel.loginError?.let { error ->
+                Text(text = error, color = Color.Red, modifier = Modifier.padding(top = 8.dp))
+            }
 
             Spacer(modifier = Modifier.height(32.dp))
 
-            // 3. Nút bấm xử lý
+            // Nút bấm xử lý API
             Button(
                 onClick = {
-                    // Gọi hàm register trong ViewModel
-//                    authViewModel.register(username, password, fullName, email)
-                    onBackToLogin()
+
+                    authViewModel.register(username, password, fullName, email)
                 },
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(56.dp),
-                shape = MaterialTheme.shapes.medium
+                shape = MaterialTheme.shapes.medium,
+                enabled = !authViewModel.isLoading
             ) {
                 if (authViewModel.isLoading) {
-                    CircularProgressIndicator(color = androidx.compose.ui.graphics.Color.White)
+                    CircularProgressIndicator(color = Color.White, modifier = Modifier.size(24.dp))
                 } else {
                     Text("XÁC NHẬN ĐĂNG KÝ", fontWeight = FontWeight.Bold)
                 }
@@ -114,7 +134,8 @@ fun RegisterScreen(
 
             TextButton(
                 onClick = onBackToLogin,
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth(),
+                enabled = !authViewModel.isLoading
             ) {
                 Text("Đã có tài khoản? Đăng nhập ngay")
             }

@@ -179,7 +179,7 @@ fun BookItem(
         ) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.Top // Chuyển sang Top để căn chỉnh mô tả dài tốt hơn
+                verticalAlignment = Alignment.Top
             ) {
                 // Khối Bìa Sách Giả Lập thiết kế lại đổ màu Gradient sang chảnh
                 Box(
@@ -264,8 +264,6 @@ fun BookItem(
                             shape = RoundedCornerShape(8.dp)
                         ) {
                             Text(
-                                // Ở bài trước BookResponse chưa có price,
-                                // Bro nhớ kiểm tra lại file BookResponse.kt xem đã khai báo "val price: Double?" chưa nhé!
                                 text = formatVnd(book.price),
                                 modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
                                 fontSize = 12.sp,
@@ -284,7 +282,6 @@ fun BookItem(
                 color = Color(0xFFE5E7EB)
             )
 
-            // Hàng Action Buttons dọn xuống dưới giúp bấm cực kỳ thoải mái
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.End,

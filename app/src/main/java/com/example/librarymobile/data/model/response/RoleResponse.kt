@@ -7,15 +7,15 @@ import com.google.gson.annotations.SerializedName
 
 
 data class RoleResponse(
-    @SerializedName("role_id") val roleId: Long?, // Thêm ?
-    @SerializedName("role_name") val roleName: String?, // Thêm ?
+    @SerializedName("role_id") val roleId: Long?,
+    @SerializedName("role_name") val roleName: String?,
     @SerializedName("description") val description: String?,
     @SerializedName("permissions") val permissions: List<PermissionResponse>?
 )
 
 data class PermissionResponse(
-    @SerializedName("permission_id") val permissionId: Long?, // Thêm ?
-    @SerializedName("permission_name") val permissionName: String?, // Thêm ?
+    @SerializedName("permission_id") val permissionId: Long?,
+    @SerializedName("permission_name") val permissionName: String?,
     @SerializedName("module") val module: String?
 )
 

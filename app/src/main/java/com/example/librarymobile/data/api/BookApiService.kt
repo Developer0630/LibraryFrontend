@@ -36,4 +36,14 @@ interface BookApiService {
         @Path("copyId") copyId: Long,
         @Query("status") status: String
     ): Response<BookCopyResponse>
+
+    // Lấy danh sách đặt trước của sinh viên hiện tại
+    @GET("api/reservations")
+    suspend fun getMyReservations(): Response<List<ReservationResponse>>
+
+    // Hủy đặt trước sách dựa vào ID phiếu đặt
+    @DELETE("api/reservations/{reservationId}")
+    suspend fun cancelReservation(
+        @Path("reservationId") reservationId: Long
+    ): Response<String>
 }

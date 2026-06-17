@@ -46,7 +46,6 @@ class BookViewModel : ViewModel() {
         viewModelScope.launch {
             try {
                 val response = NetworkModule.bookApiService.createBook(request)
-                // SỬA Ở ĐÂY: response.body() để lấy BaseResponse, rồi mới .data
                 if (response.isSuccessful && response.body()?.data != null) {
                     fetchBooks()
                 } else {
@@ -62,7 +61,6 @@ class BookViewModel : ViewModel() {
         viewModelScope.launch {
             try {
                 val response = NetworkModule.bookApiService.updateBook(id, request)
-                // SỬA Ở ĐÂY: response.body() để lấy BaseResponse, rồi mới .data
                 if (response.isSuccessful && response.body()?.data != null) {
                     fetchBooks()
                 } else {

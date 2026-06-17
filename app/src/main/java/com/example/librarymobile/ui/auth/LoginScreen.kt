@@ -14,9 +14,9 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 
 @Composable
 fun LoginScreen(
-    onLoginSuccess: () -> Unit,
+    onLoginSuccess: (String) -> Unit,
     onNavigateToRegister: () -> Unit,
-    viewModel: AuthViewModel = viewModel() // THÊM DÒNG NÀY: Nhận ViewModel vào
+    viewModel: AuthViewModel = viewModel()
 ) {
     var username by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
@@ -24,7 +24,19 @@ fun LoginScreen(
     // Lắng nghe trạng thái đăng nhập thành công từ ViewModel
     LaunchedEffect(viewModel.loginSuccess) {
         if (viewModel.loginSuccess) {
-            onLoginSuccess()
+            // Lấy thông tin hồ sơ vừa đăng nhập thành công ra
+            val profile = viewModel.currentUserProfile
+            val roles = profile?.roles ?: emptySet()
+
+            // Phân quyền dựa vào danh sách Roles từ DB trả về
+            val userRole = when {
+                roles.contains("ADMIN") -> "ADMIN"
+                roles.contains("STAFF") -> "STAFF"
+                else -> "STUDENT" // Mặc định nếu là sinh viên hoặc rỗng
+            }
+
+            // Bắn cái String "ADMIN", "STAFF", hoặc "STUDENT" ra ngoài file điều hướng chính
+            onLoginSuccess(userRole)
         }
     }
 
@@ -44,7 +56,7 @@ fun LoginScreen(
             onValueChange = { username = it },
             label = { Text("Tên đăng nhập") },
             modifier = Modifier.fillMaxWidth(),
-            enabled = !viewModel.isLoading // Khóa field khi đang load
+            enabled = !viewModel.isLoading
         )
 
         Spacer(modifier = Modifier.height(16.dp))

@@ -10,6 +10,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.Logout
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
@@ -25,7 +26,10 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 
 @Composable
-fun DashboardScreen(navController: NavController) {
+fun DashboardScreen(
+    navController: NavController,
+    onLogout: () -> Unit
+) {
     val scrollState = rememberScrollState()
 
     Column(
@@ -36,30 +40,55 @@ fun DashboardScreen(navController: NavController) {
     ) {
         // --- PHẦN 1: HEADER & PROFILE ---
         Row(
-            modifier = Modifier.fillMaxWidth().padding(24.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(start = 24.dp, end = 24.dp, top = 32.dp, bottom = 24.dp),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
             Column {
                 Text("Bảng điều khiển", color = Color.White.copy(alpha = 0.7f), fontSize = 14.sp)
-                Text("Chào Admin Luong!", color = Color.White, fontWeight = FontWeight.Bold, fontSize = 24.sp)
+                Text("Chào Admin !", color = Color.White, fontWeight = FontWeight.Bold, fontSize = 24.sp)
             }
-            Box(modifier = Modifier.size(50.dp).background(Color.White.copy(alpha = 0.2f), CircleShape), contentAlignment = Alignment.Center) {
-                Icon(Icons.Default.Notifications, contentDescription = null, tint = Color.White)
+
+            // Cụm nút chức năng hệ thống góc phải
+            Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                // Nút thông báo
+                Box(
+                    modifier = Modifier
+                        .size(44.dp)
+                        .background(Color.White.copy(alpha = 0.15f), CircleShape),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Icon(Icons.Default.Notifications, contentDescription = null, tint = Color.White)
+                }
+
+                // Nút Đăng xuất tiện lợi
+                IconButton(
+                    onClick = onLogout,
+                    modifier = Modifier
+                        .size(44.dp)
+                        .background(Color.White.copy(alpha = 0.15f), CircleShape)
+                ) {
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Filled.Logout,
+                        contentDescription = "Đăng xuất",
+                        tint = Color.White
+                    )
+                }
             }
         }
 
-        // --- PHẦN 2: GLASS CARD TỔNG QUAN (SÁNG TẠO) ---
+        // --- PHẦN 2: GLASS CARD TỔNG QUAN ---
         Card(
             modifier = Modifier.fillMaxWidth().padding(horizontal = 24.dp).height(180.dp),
             shape = RoundedCornerShape(32.dp),
-            colors = CardDefaults.cardColors(containerColor = Color.White.copy(alpha = 0.9f)),
+            colors = CardDefaults.cardColors(containerColor = Color.White.copy(alpha = 0.95f)),
             elevation = CardDefaults.cardElevation(0.dp)
         ) {
             Box(modifier = Modifier.fillMaxSize()) {
-                // Trang trí một chút hình khối mờ phía sau
                 Canvas(modifier = Modifier.matchParentSize()) {
-                    drawCircle(color = Color(0xFFD32F2F).copy(alpha = 0.1f), radius = 200f, center = center)
+                    drawCircle(color = Color(0xFFD32F2F).copy(alpha = 0.05f), radius = 200f, center = center)
                 }
                 Column(modifier = Modifier.padding(24.dp)) {
                     Text("Hiệu suất thư viện", fontWeight = FontWeight.Bold, color = Color.Black)
@@ -71,7 +100,7 @@ fun DashboardScreen(navController: NavController) {
                     LinearProgressIndicator(
                         progress = 0.85f,
                         modifier = Modifier.fillMaxWidth().height(8.dp).clip(CircleShape),
-                        color = Color(0xFFD32F2F),
+                        color = Color(0xFF1A237E), // Đồng bộ thanh progress sang màu Indigo cho đồng nhất
                         trackColor = Color.LightGray.copy(alpha = 0.3f)
                     )
                 }
@@ -80,8 +109,8 @@ fun DashboardScreen(navController: NavController) {
 
         Spacer(modifier = Modifier.height(32.dp))
 
-        // --- PHẦN 3: QUICK ACTIONS (DẠNG TRƯỢT NGANG) ---
-        Text("Thao tác nhanh", modifier = Modifier.padding(horizontal = 24.dp), fontWeight = FontWeight.Bold)
+        // --- PHẦN 3: QUICK ACTIONS ---
+        Text("Thao tác nhanh", modifier = Modifier.padding(horizontal = 24.dp), fontWeight = FontWeight.Bold, color = Color.Black.copy(alpha = 0.8f))
         LazyRow(
             contentPadding = PaddingValues(horizontal = 24.dp, vertical = 16.dp),
             horizontalArrangement = Arrangement.spacedBy(16.dp)
@@ -92,16 +121,15 @@ fun DashboardScreen(navController: NavController) {
             item { QuickActionItem("Cài đặt", Icons.Default.Settings, Color(0xFF7B1FA2)) { /* Action */ } }
         }
 
-        // --- PHẦN 4: RECENT ACTIVITY (DANH SÁCH HOẠT ĐỘNG) ---
+        // --- PHẦN 4: RECENT ACTIVITY ---
         Surface(
             modifier = Modifier.fillMaxWidth().weight(1f, fill = false),
             color = Color.White,
             shape = RoundedCornerShape(topStart = 40.dp, topEnd = 40.dp)
         ) {
-            Column(modifier = Modifier.padding(24.dp)) {
+            Column(modifier = Modifier.padding(24.dp).navigationBarsPadding()) {
                 Text("Hoạt động gần đây", fontWeight = FontWeight.Bold, style = MaterialTheme.typography.titleMedium)
                 Spacer(modifier = Modifier.height(16.dp))
-                // Giả lập danh sách hoạt động
                 ActivityItem("SV001 vừa mượn 'Lập trình Kotlin'", "10 phút trước")
                 ActivityItem("Nhân viên A cập nhật hệ thống", "1 giờ trước")
                 ActivityItem("Sách 'AI' được trả bởi SV005", "3 giờ trước")

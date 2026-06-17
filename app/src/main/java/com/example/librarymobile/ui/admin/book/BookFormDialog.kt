@@ -23,7 +23,7 @@ fun BookFormDialog(
     var isbn by remember { mutableStateOf(book?.isbn ?: "") }
     var category by remember { mutableStateOf(book?.category ?: "") } // Đại diện cho genre
     var shelfLocation by remember { mutableStateOf(book?.shelfLocation ?: "") }
-    var price by remember { mutableStateOf(book?.description ?: "") } // Tạm thời map từ state hoặc để trống vì BookResponse hôm trước chưa có price
+    var price by remember { mutableStateOf(book?.price?.toString() ?: "") }
     var description by remember { mutableStateOf(book?.description ?: "") }
     var initialStock by remember { mutableStateOf("1") }
 
@@ -54,7 +54,7 @@ fun BookFormDialog(
 
                 OutlinedTextField(value = description, onValueChange = { description = it }, label = { Text("Mô tả sách") }, modifier = Modifier.fillMaxWidth(), maxLines = 3)
 
-                // Chỉ hiển thị số lượng khi THÊM MỚI (vì sửa sách sẽ dùng tính năng điều chỉnh stock riêng)
+                // Chỉ hiển thị số lượng khi THÊM MỚI
                 if (book == null) {
                     OutlinedTextField(
                         value = initialStock,
