@@ -1,17 +1,19 @@
 package com.example.librarymobile.ui.navigation
 
-
 import androidx.compose.runtime.Composable
 import androidx.navigation.compose.*
+import com.example.librarymobile.data.api.NetworkModule // 1. Import NetworkModule để lấy apiService
 import com.example.librarymobile.ui.admin.book.BookManageScreen
+import com.example.librarymobile.ui.admin.book.BookViewModel
 import com.example.librarymobile.ui.admin.dashboard.DashboardScreen
+import com.example.librarymobile.ui.admin.loan.LoanManageScreen // 2. Import đúng màn hình mượn sách
+import com.example.librarymobile.ui.admin.loan.LoanViewModel     // 3. Import đúng ViewModel mượn sách
 import com.example.librarymobile.ui.admin.staff.StaffManageScreen
 import com.example.librarymobile.ui.auth.AuthViewModel
 import com.example.librarymobile.ui.auth.LoginScreen
 import com.example.librarymobile.ui.auth.RegisterScreen
 import com.example.librarymobile.ui.student.StudentHomeScreen
 import com.example.librarymobile.ui.student.StudentReservationScreen
-import com.example.librarymobile.ui.admin.book.BookViewModel
 
 @Composable
 fun AppNavGraph() {
@@ -20,6 +22,12 @@ fun AppNavGraph() {
     // KHỞI TẠO Ở ĐÂY: Dùng hàm viewModel() để tạo ra thực thể authViewModel
     val authViewModel: AuthViewModel = androidx.lifecycle.viewmodel.compose.viewModel()
     val bookViewModel: BookViewModel = androidx.lifecycle.viewmodel.compose.viewModel()
+
+    // 4. Khởi tạo LoanViewModel bằng cách truyền thẳng loanApiService từ Singleton NetworkModule của bro
+    val loanViewModel: LoanViewModel = androidx.lifecycle.viewmodel.compose.viewModel {
+        LoanViewModel(NetworkModule.loanApiService)
+    }
+
     NavHost(navController = navController, startDestination = "login") {
         // Màn hình Login
         composable("login") {
@@ -55,7 +63,7 @@ fun AppNavGraph() {
 
         // Màn hình Dashboard
         composable(route = "dashboard") {
-            DashboardScreen(navController,onLogout = {
+            DashboardScreen(navController, onLogout = {
                 // Logic đăng xuất: Xóa dữ liệu cũ và quay về màn hình Login
                 authViewModel.loginSuccess = false
                 authViewModel.currentUserProfile = null
@@ -85,6 +93,7 @@ fun AppNavGraph() {
                 }
             )
         }
+
         composable("student_reservations") {
             StudentReservationScreen(
                 username = authViewModel.currentUserProfile?.username ?: "Sinh viên",
@@ -95,17 +104,27 @@ fun AppNavGraph() {
                 bookViewModel = bookViewModel
             )
         }
+
         // Màn hình quản lý nhân viên (Cái mình vừa fix xong data)
         composable("staff_manage") {
             StaffManageScreen(onBack = { navController.popBackStack() })
         }
+
         composable("book_manage") {
             BookManageScreen(onBack = { navController.popBackStack() })
         }
+
+        // 5. Bổ sung màn hình quản lý mượn sách tại quầy cho Thủ thư
+        composable("loan_manage") {
+            LoanManageScreen(
+                viewModel = loanViewModel,
+                onBack = { navController.popBackStack() }
+            )
+        }
+
         // Màn hình quy tắc (Tạm thời để màn hình trống để không bị crash)
 //        composable("system_rules") {
 //            SystemRulesScreen(onBack = { navController.popBackStack() })
 //        }
     }
-
 }

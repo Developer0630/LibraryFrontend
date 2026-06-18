@@ -22,4 +22,7 @@ private val client = OkHttpClient.Builder()
         .build()
     val apiService: ApiService = retrofit.create(ApiService::class.java)
     val bookApiService: BookApiService = retrofit.create(BookApiService::class.java)
+
+    val loanApiService: LoanApiService = retrofit.create(LoanApiService::class.java)
+
 }

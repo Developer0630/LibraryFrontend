@@ -51,9 +51,7 @@ fun DashboardScreen(
                 Text("Chào Admin !", color = Color.White, fontWeight = FontWeight.Bold, fontSize = 24.sp)
             }
 
-            // Cụm nút chức năng hệ thống góc phải
             Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                // Nút thông báo
                 Box(
                     modifier = Modifier
                         .size(44.dp)
@@ -63,7 +61,6 @@ fun DashboardScreen(
                     Icon(Icons.Default.Notifications, contentDescription = null, tint = Color.White)
                 }
 
-                // Nút Đăng xuất tiện lợi
                 IconButton(
                     onClick = onLogout,
                     modifier = Modifier
@@ -100,7 +97,7 @@ fun DashboardScreen(
                     LinearProgressIndicator(
                         progress = 0.85f,
                         modifier = Modifier.fillMaxWidth().height(8.dp).clip(CircleShape),
-                        color = Color(0xFF1A237E), // Đồng bộ thanh progress sang màu Indigo cho đồng nhất
+                        color = Color(0xFF1A237E),
                         trackColor = Color.LightGray.copy(alpha = 0.3f)
                     )
                 }
@@ -109,12 +106,22 @@ fun DashboardScreen(
 
         Spacer(modifier = Modifier.height(32.dp))
 
-        // --- PHẦN 3: QUICK ACTIONS ---
+        // --- PHẦN 3: QUICK ACTIONS (BỔ SUNG MƯỢN SÁCH TẠI ĐÂY) ---
         Text("Thao tác nhanh", modifier = Modifier.padding(horizontal = 24.dp), fontWeight = FontWeight.Bold, color = Color.Black.copy(alpha = 0.8f))
         LazyRow(
             contentPadding = PaddingValues(horizontal = 24.dp, vertical = 16.dp),
             horizontalArrangement = Arrangement.spacedBy(16.dp)
         ) {
+            // Nút Mượn sách tích hợp quy trình 3.6 (Nổi bật lên đầu hoặc cạnh nút sách)
+            item {
+                QuickActionItem(
+                    title = "Mượn sách",
+                    icon = Icons.Default.AutoStories,
+                    color = Color(0xFFFF5722) // Tone màu cam Coral bắt mắt cho tính năng giao dịch tại quầy
+                ) {
+                    navController.navigate("loan_manage")
+                }
+            }
             item { QuickActionItem("Nhân viên", Icons.Default.PersonAdd, Color(0xFF4285F4)) { navController.navigate("staff_manage") } }
             item { QuickActionItem("Thêm sách", Icons.Default.AddBusiness, Color(0xFF34A853)) { navController.navigate("book_manage") } }
             item { QuickActionItem("Báo cáo", Icons.Default.PieChart, Color(0xFFFBBC05)) { /* Action */ } }
