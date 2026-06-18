@@ -38,12 +38,21 @@ interface BookApiService {
     ): Response<BookCopyResponse>
 
     // Lấy danh sách đặt trước của sinh viên hiện tại
+    // Trong BookApiService.kt
     @GET("api/reservations")
-    suspend fun getMyReservations(): Response<List<ReservationResponse>>
+    suspend fun getMyReservations(
+        @Query("username") username: String
+    ): Response<List<ReservationResponse>>
 
+    @POST("api/reservations")
+    suspend fun createReservation(
+        @Body request: ReservationRequestDTO,
+        @Query("username") username: String // Truyền thêm param username để đồng bộ với Backend
+    ): Response<ReservationResponse>
     // Hủy đặt trước sách dựa vào ID phiếu đặt
     @DELETE("api/reservations/{reservationId}")
     suspend fun cancelReservation(
-        @Path("reservationId") reservationId: Long
+        @Path("reservationId") reservationId: Long,
+        @Query("username") username: String
     ): Response<String>
 }

@@ -10,7 +10,8 @@ import com.example.librarymobile.ui.auth.AuthViewModel
 import com.example.librarymobile.ui.auth.LoginScreen
 import com.example.librarymobile.ui.auth.RegisterScreen
 import com.example.librarymobile.ui.student.StudentHomeScreen
-
+import com.example.librarymobile.ui.student.StudentReservationScreen
+import com.example.librarymobile.ui.admin.book.BookViewModel
 
 @Composable
 fun AppNavGraph() {
@@ -18,7 +19,7 @@ fun AppNavGraph() {
 
     // KHỞI TẠO Ở ĐÂY: Dùng hàm viewModel() để tạo ra thực thể authViewModel
     val authViewModel: AuthViewModel = androidx.lifecycle.viewmodel.compose.viewModel()
-
+    val bookViewModel: BookViewModel = androidx.lifecycle.viewmodel.compose.viewModel()
     NavHost(navController = navController, startDestination = "login") {
         // Màn hình Login
         composable("login") {
@@ -70,6 +71,10 @@ fun AppNavGraph() {
 
             StudentHomeScreen(
                 username = studentName,
+                onNavigateToReservations = {
+                    // Điều hướng sang màn hình đặt trước khi sinh viên click nút
+                    navController.navigate("student_reservations")
+                },
                 onLogout = {
                     // Logic đăng xuất: Xóa dữ liệu cũ và quay về màn hình Login
                     authViewModel.loginSuccess = false
@@ -80,7 +85,16 @@ fun AppNavGraph() {
                 }
             )
         }
-
+        composable("student_reservations") {
+            StudentReservationScreen(
+                username = authViewModel.currentUserProfile?.username ?: "Sinh viên",
+                onBack = {
+                    // Bấm nút quay lại trên thanh TopBar thì pop quay về trang chủ
+                    navController.popBackStack()
+                },
+                bookViewModel = bookViewModel
+            )
+        }
         // Màn hình quản lý nhân viên (Cái mình vừa fix xong data)
         composable("staff_manage") {
             StaffManageScreen(onBack = { navController.popBackStack() })
