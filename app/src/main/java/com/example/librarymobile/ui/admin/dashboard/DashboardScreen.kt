@@ -106,25 +106,40 @@ fun DashboardScreen(
 
         Spacer(modifier = Modifier.height(32.dp))
 
-        // --- PHẦN 3: QUICK ACTIONS (BỔ SUNG MƯỢN SÁCH TẠI ĐÂY) ---
+        // --- PHẦN 3: QUICK ACTIONS ---
         Text("Thao tác nhanh", modifier = Modifier.padding(horizontal = 24.dp), fontWeight = FontWeight.Bold, color = Color.Black.copy(alpha = 0.8f))
         LazyRow(
             contentPadding = PaddingValues(horizontal = 24.dp, vertical = 16.dp),
             horizontalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            // Nút Mượn sách tích hợp quy trình 3.6 (Nổi bật lên đầu hoặc cạnh nút sách)
             item {
                 QuickActionItem(
                     title = "Mượn sách",
                     icon = Icons.Default.AutoStories,
-                    color = Color(0xFFFF5722) // Tone màu cam Coral bắt mắt cho tính năng giao dịch tại quầy
+                    color = Color(0xFFFF5722)
                 ) {
                     navController.navigate("loan_manage")
                 }
             }
+            item {
+                QuickActionItem(
+                    title = "Trả sách",
+                    icon = Icons.Default.AssignmentReturn,
+                    color = Color(0xFF2E7D32)
+                ) {
+                    navController.navigate("return_manage")
+                }
+            }
             item { QuickActionItem("Nhân viên", Icons.Default.PersonAdd, Color(0xFF4285F4)) { navController.navigate("staff_manage") } }
             item { QuickActionItem("Thêm sách", Icons.Default.AddBusiness, Color(0xFF34A853)) { navController.navigate("book_manage") } }
-            item { QuickActionItem("Báo cáo", Icons.Default.PieChart, Color(0xFFFBBC05)) { /* Action */ } }
+
+            // --- ĐÃ ĐẤU NỐI ROUTE BÁO CÁO TẠI ĐÂY ---
+            item {
+                QuickActionItem("Báo cáo", Icons.Default.PieChart, Color(0xFFFBBC05)) {
+                    navController.navigate("admin_report")
+                }
+            }
+
             item { QuickActionItem("Cài đặt", Icons.Default.Settings, Color(0xFF7B1FA2)) { /* Action */ } }
         }
 

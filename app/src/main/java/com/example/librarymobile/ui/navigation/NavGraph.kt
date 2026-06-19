@@ -15,6 +15,14 @@ import com.example.librarymobile.ui.auth.RegisterScreen
 import com.example.librarymobile.ui.student.StudentHomeScreen
 import com.example.librarymobile.ui.student.StudentReservationScreen
 
+import com.example.librarymobile.ui.admin.returns.ReturnScreen
+import com.example.librarymobile.ui.admin.returns.ReturnViewModel
+import com.example.librarymobile.ui.student.StudentViewModel
+
+// --- BỔ SUNG IMPORT CHO PHẦN THỐNG KÊ BÁO CÁO TẠI ĐÂY ---
+import com.example.librarymobile.ui.reports.AdminReportScreen
+import com.example.librarymobile.ui.reports.AdminReportViewModel
+
 @Composable
 fun AppNavGraph() {
     val navController = rememberNavController()
@@ -26,6 +34,19 @@ fun AppNavGraph() {
     // 4. Khởi tạo LoanViewModel bằng cách truyền thẳng loanApiService từ Singleton NetworkModule của bro
     val loanViewModel: LoanViewModel = androidx.lifecycle.viewmodel.compose.viewModel {
         LoanViewModel(NetworkModule.loanApiService)
+    }
+
+    val returnViewModel: ReturnViewModel = androidx.lifecycle.viewmodel.compose.viewModel {
+        ReturnViewModel(NetworkModule.returnApiService) // Đảm bảo bên NetworkModule của bro đã khai báo returnApiService nhé
+    }
+
+    val studentViewModel: StudentViewModel = androidx.lifecycle.viewmodel.compose.viewModel {
+        StudentViewModel(NetworkModule.studentApiService)
+    }
+
+    // --- KHỞI TẠO ADMIN REPORT VIEWMODEL CHUẨN INJECTION ---
+    val adminReportViewModel: AdminReportViewModel = androidx.lifecycle.viewmodel.compose.viewModel {
+        AdminReportViewModel(NetworkModule.adminApiService)
     }
 
     NavHost(navController = navController, startDestination = "login") {
@@ -118,6 +139,22 @@ fun AppNavGraph() {
         composable("loan_manage") {
             LoanManageScreen(
                 viewModel = loanViewModel,
+                onBack = { navController.popBackStack() }
+            )
+        }
+
+        // 6. ĐĂNG KÝ ROUTE CHO MÀN HÌNH TRẢ SÁCH TẠI ĐÂY
+        composable("return_manage") {
+            ReturnScreen(
+                viewModel = returnViewModel,
+                onBack = { navController.popBackStack() }
+            )
+        }
+
+        // --- ĐĂNG KÝ ROUTE CHO MÀN HÌNH THỐNG KÊ BÁO CÁO TẠI ĐÂY ---
+        composable("admin_report") {
+            AdminReportScreen(
+                viewModel = adminReportViewModel,
                 onBack = { navController.popBackStack() }
             )
         }
